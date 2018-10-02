@@ -1,88 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rx_architecture/blocs/application_bloc.dart';
+import 'package:flutter_rx_architecture/blocs/bloc_provider.dart';
+import 'package:flutter_rx_architecture/blocs/product_bloc.dart';
+import 'package:flutter_rx_architecture/views/list_view.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(
+    BlocProvider<ApplicationBloc>(
+      bloc: ApplicationBloc(),
+      child: MyApp(),
+    )
+);
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
+    return MaterialApp(
+      title: 'Movies',
+      theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var appBloc = BlocProvider.of<ApplicationBloc>(context); // get bloc
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(widget.title),
+        title: Text("Hello"),
         actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              print("Refresh");
-            },
-            icon: Icon(Icons.refresh),
-          )
-        ],
-      ),
-      body: Stack(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Type to search",
-                  icon: new Icon(Icons.search),
-                ),
-                onChanged:(string) {
-                  print("Text change");
-                },
-              ),
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.all(15.0),
-                  itemCount: 5,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: <Widget>[
-                        ListTile(
-                          title: Text("Title"),
-                          subtitle: Text("SubTitle"),
-                        ),
-                        Divider(),
-                      ],
-                    );
-                  }
-                ),
-              ),
-            ],
-          ),
-          Container(  // Spinner
-            alignment: AlignmentDirectional.center,
-            child: CircularProgressIndicator(),
+          StreamBuilder<String>(
+              stream: appBloc.getTotalMoneyCommand,
+              builder: (BuildContext context, AsyncSnapshot<String> numberClick) {
+                return FloatingActionButton(
+                  mini: true,
+                  child: Text(numberClick.data??""),
+                  backgroundColor: Colors.red,
+                  onPressed: null, // display only
+                );
+              }
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: new Icon(Icons.add),
-        onPressed: () {
-          print("Add");
-        },
+      body: BlocProvider<ProductBloc>(
+          bloc: ProductBloc(),
+          child: ProductListView()
       ),
     );
   }
 }
+
+
+//BlocProvider.of<ApplicationBloc>(context).getClickNumberCommand
