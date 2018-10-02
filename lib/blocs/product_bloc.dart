@@ -4,7 +4,6 @@ import 'package:flutter_rx_architecture/blocs/bloc_provider.dart';
 import 'package:flutter_rx_architecture/api/product_api.dart';
 import 'package:rx_command/rx_command.dart';
 
-
 class ProductBloc implements BlocBase {
   // Data
   List<Product> _products;
@@ -16,12 +15,12 @@ class ProductBloc implements BlocBase {
   RxCommand<void, void> updateProductListCommand;
 
   ProductBloc() {
-    getProductListCommand = RxCommand.createSyncNoParam(
+    getProductListCommand = RxCommand.createSyncNoParam<List<Product>>(
         _getProductList,
         emitsLastValueToNewSubscriptions: true
     );
 
-    filterChangedCommand = RxCommand.createSync((s) => s);
+    filterChangedCommand = RxCommand.createSync<String, String>((s) => s);
     filterChangedCommand.debounce(Duration(milliseconds: 500)).listen((filterText) {
       _filter = filterText;
       getProductListCommand.execute();
@@ -30,22 +29,20 @@ class ProductBloc implements BlocBase {
     updateProductListCommand = RxCommand.createAsyncNoParamNoResult(() async {
       var str = await productApi.getProductList();
       var list = json.decode(str) as List<dynamic>;
-      _products = list.map((json)=>Product.fromJson(json)).toList();
+      _products = list.map((json) => Product.fromJson(json)).toList();
       getProductListCommand.execute();
     });
 
     // Update data on startup
     updateProductListCommand.execute();
-
   }
 
   List<Product> _getProductList() {
-    return _products.where((Product prod) =>
-          _filter == null || _filter.isEmpty ||
-          prod.name.toUpperCase().startsWith(_filter.toUpperCase())
-    ).toList();
+    if (_filter == null || _filter.isEmpty) {
+      return _products;
+    }
+    return _products.where((Product prod) => prod.name.toUpperCase().startsWith(_filter.toUpperCase())).toList();
   }
-
 
   void dispose() {
     getProductListCommand.dispose();

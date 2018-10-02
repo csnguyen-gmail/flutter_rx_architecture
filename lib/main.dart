@@ -35,6 +35,7 @@ class HomePage extends StatelessWidget {
         title: Text("Hello"),
         actions: <Widget>[
           StreamBuilder<String>(
+//              stream: appBloc.moneyCommand,
               stream: appBloc.getTotalMoneyCommand,
               builder: (BuildContext context, AsyncSnapshot<String> numberClick) {
                 return FloatingActionButton(

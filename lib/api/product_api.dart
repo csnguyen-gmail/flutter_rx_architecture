@@ -7,7 +7,7 @@ class ProductApi {
   }
 
   Future<String> getProductList() async{
-    await Future.delayed(Duration(seconds: 2)); //Mock delay
+    await Future.delayed(Duration(seconds: 1)); //Mock delay
     _isError = !_isError;
     if (_isError) {
       throw Exception("getProductList error");
