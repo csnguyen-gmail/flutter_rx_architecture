@@ -10,10 +10,10 @@ class ApplicationBloc implements BlocBase {
 
   // RX + Stream
   BehaviorSubject<String> _getTotalMoneySubject = BehaviorSubject<String>();
-  Stream<String> get getTotalMoneyCommand => _getTotalMoneySubject.stream;
+  Stream<String> get outTotalMoney => _getTotalMoneySubject.stream;
 
   StreamController<int> _addMoneyController = StreamController<int>();
-  Sink<int> get addMoneyCommand => _addMoneyController.sink;
+  Sink<int> get inTotalMoney => _addMoneyController.sink;
 
 
   ApplicationBloc() {

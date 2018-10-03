@@ -48,7 +48,7 @@ class _ProductListViewState extends State<ProductListView> {
                                   title: Text(prod.name),
                                   subtitle: Text(prod.company),
                                   trailing: Text("${prod.price}"),
-                                  onTap: () => _appBloc.addMoneyCommand.add(prod.price)
+                                  onTap: () => _appBloc.inTotalMoney.add(prod.price)
 //                                  onTap: () => _appBloc.moneyCommand.execute(prod.price)
                               ),
                             ],
